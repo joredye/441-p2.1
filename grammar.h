@@ -1,4 +1,5 @@
-
+//Joshua Reed Dyer
+//2018-11-6, Tuesday
 
 const int TOK_CHAR_LIT = -6;
 const int TOK_REAL_LIT = -5;
@@ -114,27 +115,55 @@ const int NUM_PRODS = 3;        // change this!!
 const int PROD_LEN = 9;         // do NOT change this
 
 
-//productions 2 through 12
 const int PROD[NUM_PRODS][PROD_LEN] = {
 
-	// paste your productions here!!
+	//0
+        {NT_PROGRAM, TOK_PROGRAM, TOK_IDENT, TOK_SEMIC, NT_DECLARATIONS, NT_SUBPGM_DCLS, NT_CMPD_STMT, TOK_PERIOD, E}, 
 
         //1
-	{ NT_ID_LIST, TOK_IDENT,  E,         E          E, E, E, E, E },
-
-	{ NT_ID_LIST, NT_ID_LIST, TOK_COMMA, TOK_IDENT, E, E, E, E, E },
-        
-	{ NT_ID_LIST, E,          E        , E,         E, E, E, E, E }
+	{NT_ID_LIST, TOK_IDENT,  E,         E          E, E, E, E, E },
+	{NT_ID_LIST, NT_ID_LIST, TOK_COMMA, TOK_IDENT, E, E, E, E, E },
         
         //2
-        {NT_DECLARATIONS, NT_DECLARATIONS, TOK_VAR, NT_ID_LIST, TOK_COLON, NT_TYPE, TOK_SEMIC, E, E}
-        {NT_DECLARATIONS,   E,  E,  E,  E,  E,  E,  E,  E}
+        {NT_DECLARATIONS, NT_DECLARATIONS, TOK_VAR, NT_ID_LIST, TOK_COLON, NT_TYPE, TOK_SEMIC, E, E},
+        {NT_DECLARATIONS, E, E, E, E, E, E, E, E},
         
         //3 
-        {NT_TYPE, NT_STD_TYPE,  E,  E,  E,  E,  E,  E,  E}
-        {NT_TYPE, TOK_ARRAY, TOK_LBRKT, TOK_INT_LIT, TOK_DOTDOT, TOK_INT_LIT, TOK_RBRKT, TOK_OF, NT_STD_TYPE}
-        
-        //4
-            
+        {NT_TYPE, NT_STD_TYPE,  E,  E,  E,  E,  E,  E,  E},
+        {NT_TYPE, TOK_ARRAY, TOK_LBRKT, TOK_INT_LIT, TOK_DOTDOT, TOK_INT_LIT, TOK_RBRKT, TOK_OF, NT_STD_TYPE},
 
+        //4
+        {NT_STD_TYPE, TOK_INTEGER, E, E, E, E, E, E, E},
+        {NT_STD_TYPE, TOK_REAL   , E, E, E, E, E, E, E},
+        {NT_STD_TYPE, TOK_STRING , E, E, E, E, E, E, E},
+        
+        //5
+        {NT_SUBPGM_DCLS, NT_SUBPGM_DCLS, NT_SUBPGM_DCL, TOK_SEMIC, E, E, E, E, E},
+        {NT_SUBPGM_DCLS, E, E, E, E, E, E, E, E},
+        
+        //6
+        {NT_SUBPGM_DCL, NT_SUBPGM_HEAD, NT_DECLARATIONS, NT_CMPD_STMT, E, E, E, E, E},
+        
+        //7 
+        {NT_SUBPGM_HEAD, TOK_FUNCTION, TOK_IDENT, NT_ARGS, TOK_COLON, NT_STD_TYPE, TOK_SEMIC, E, E},
+        {NT_SUBPGM_HEAD, TOK_PROCEDURE, TOK_IDENT, NT_ARGS, TOK_SEMIC, E, E, E, E},
+        
+        //8
+        {NT_ARGS, TOK_LEFTPAR, NT_PARAM_LIST, TOK_RIGHTPAR, E, E, E, E, E},
+        {NT_ARGS, E, E, E, E, E, E, E, E},
+        
+        //9
+        {NT_PARAM_LIST, NT_ID_LIST, TOK_COLON, NT_TYPE, E, E, E, E, E},
+        {NT_PARAM_LIST, NT_PARAM_LIST, TOK_SEMIC, NT_ID_LIST, TOK_COLON, NT_TYPE, E, E, E},
+        
+        //10
+        {NT_CMPD_STMT, TOK_BEGIN, NT_OPT_STMTS, TOK_END, E, E, E, E, E},
+        
+        //11
+        {NT_OPT_STMTS, NT_STMT_LIST, E, E, E, E, E, E, E},
+        {NT_OPT_STMTS, E, E, E, E, E, E, E, E},
+        
+        //12
+        {NT_STMT_LIST, NT_STMT, E, E, E, E, E, E, E},
+        {NT_STMT_LIST, NT_STMT_LIST, TOK_SEMIC, NT_STMT, E, E, E, E, E}     
 };
