@@ -111,7 +111,7 @@ const int NT_FACTOR_END = 227;
 const int NT_SIGN = 228;
 
 
-const int NUM_PRODS = 3;        // change this!!
+const int NUM_PRODS = 24;        // change this!!
 const int PROD_LEN = 9;         // do NOT change this
 
 
@@ -121,7 +121,7 @@ const int PROD[NUM_PRODS][PROD_LEN] = {
         {NT_PROGRAM, TOK_PROGRAM, TOK_IDENT, TOK_SEMIC, NT_DECLARATIONS, NT_SUBPGM_DCLS, NT_CMPD_STMT, TOK_PERIOD, E}, 
 
         //1
-	{NT_ID_LIST, TOK_IDENT,  E,         E          E, E, E, E, E },
+	{NT_ID_LIST, TOK_IDENT, E, E, E, E, E, E, E },
 	{NT_ID_LIST, NT_ID_LIST, TOK_COMMA, TOK_IDENT, E, E, E, E, E },
         
         //2
@@ -149,12 +149,12 @@ const int PROD[NUM_PRODS][PROD_LEN] = {
         {NT_SUBPGM_HEAD, TOK_PROCEDURE, TOK_IDENT, NT_ARGS, TOK_SEMIC, E, E, E, E},
         
         //8
-        {NT_ARGS, TOK_LEFTPAR, NT_PARAM_LIST, TOK_RIGHTPAR, E, E, E, E, E},
+        {NT_ARGS, TOK_LEFTPAR, NT_PARM_LIST, TOK_RIGHTPAR, E, E, E, E, E},
         {NT_ARGS, E, E, E, E, E, E, E, E},
         
         //9
-        {NT_PARAM_LIST, NT_ID_LIST, TOK_COLON, NT_TYPE, E, E, E, E, E},
-        {NT_PARAM_LIST, NT_PARAM_LIST, TOK_SEMIC, NT_ID_LIST, TOK_COLON, NT_TYPE, E, E, E},
+        {NT_PARM_LIST, NT_ID_LIST, TOK_COLON, NT_TYPE, E, E, E, E, E},
+        {NT_PARM_LIST, NT_PARM_LIST, TOK_SEMIC, NT_ID_LIST, TOK_COLON, NT_TYPE, E, E, E},
         
         //10
         {NT_CMPD_STMT, TOK_BEGIN, NT_OPT_STMTS, TOK_END, E, E, E, E, E},
@@ -167,3 +167,4 @@ const int PROD[NUM_PRODS][PROD_LEN] = {
         {NT_STMT_LIST, NT_STMT, E, E, E, E, E, E, E},
         {NT_STMT_LIST, NT_STMT_LIST, TOK_SEMIC, NT_STMT, E, E, E, E, E}     
 };
+
