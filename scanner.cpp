@@ -4,6 +4,8 @@
 #include "StringTable.h"
 #include "token.h"
 
+scanner::scanner(){};
+
 string scanner::getLex() { return lex; }
 int scanner::getCol() { return col; }
 int scanner::getLine() { return line; }

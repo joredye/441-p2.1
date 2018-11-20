@@ -6,7 +6,8 @@
 using namespace std;
 class scanner {
 public:
-	int openSource(string filename);
+	scanner();
+        int openSource(string filename);
 	token getNextToken(StringTable & t);
 	int scanNextLex(int & lexLine, int & lexCol, int & lexCat);
 	string getLex();
@@ -17,6 +18,7 @@ public:
 	string getFState(int x);
 	string getCCat(int x);
 private:
+        
 	ifstream f;
 	string lex = "";
 	string errMsg = "Scanner not initialized\n";

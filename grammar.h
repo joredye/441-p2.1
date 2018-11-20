@@ -15,6 +15,17 @@ const int GR_RHS_LNDX = 8;		// last  index of the Right Hand Side of the product
 const int GR_SELECT_FNDX = 9;	// first index of the Select1 Set
 const int GR_SELECT_LNDX = 11;  // last  index of the Select1 Set
 
+//---------------MY ERR CONSTANTS-------------------
+
+//returned by chooseProd if any matching productions are found for the NT from the stack's top,
+//but the input token from scanner does not match any of the tokens in any of the matching
+//production's select sets, and there is no default production
+const int GR_ERR_TOPTOK = 11630;
+
+//returned by chooseProd if no productions are found for the NT from the top of the stack (i.e.
+//said NT matches no LHS in the grammar)
+const int GR_ERR_NOPROD = 12407;
+
 // The Pascal Grammar Productions and Select Sets
 const int GR_PROD[GR_NUM_PRODS][GR_NUM_COLS] = {
 	{ NT_PROGRAM,TOK_PROGRAM, TOK_IDENT, TOK_SEMIC, NT_DECLARATIONS, NT_SUBPGM_DCLS, NT_CMPD_STMT, TOK_PERIOD, E, TOK_PROGRAM, E, E },
