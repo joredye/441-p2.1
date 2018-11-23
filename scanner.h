@@ -23,7 +23,7 @@ private:
 	string lex = "";
 	string errMsg = "Scanner not initialized\n";
 	int line = 1, col = 0;
-	bool isErr = true;
+	bool isErr = true; ///?
 	bool firstLexChar = true;
 	bool isEOF = false;
 	char nextc = '\0';

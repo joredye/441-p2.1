@@ -25,14 +25,15 @@ int chooseProd(token topToken, token inputToken){
     
     //loop through grammar table, comparing tok from stack to LHS 
     bool matched = false;
-    
+    int the_match;
+     
     for(int i = 0; i < GR_NUM_PRODS; i++){
         
         if(topToken.tokId == GR_PROD[i][GR_LHS_NDX]){
             
             if(!matched){
                 //record the first matching GR_PROD[][] token for early escape check
-                int the_match = GR_PROD[i][GR_LHS_NDX];           
+                the_match = GR_PROD[i][GR_LHS_NDX];           
             }
             matched = true;
             
@@ -73,17 +74,17 @@ N -> aZb : push(b), push(Z), push(a)
     */ 
 
 
-
 //---------------------------------
 //          parser
 //---------------------------------
 void parser::parse(string fn){
     cout << "enters parse" << endl;
     scn.openSource(fn);
-    token first = scn.getNextToken(strtbl);
+    token tok = scn.getNextToken(strtbl);
     
-            
+    tokstk.push(tok);
+    
+    tokstk.print();
+    
 
-
-   
-}   
+}

@@ -6,6 +6,12 @@
 
 class parser{
 
+    public:
+    parser();
+    void parse(string fn);    
+
+    private:
+    
     scanner scn;
     StringTable strtbl;
     tokStack tokstk;
@@ -15,11 +21,7 @@ class parser{
     int chooseProd(token topToken, token inputToken);
     void pushRHS(int prodnum);
     int checkFinish(/*?*/);
-    
-    public:
-    parser();
-    void parse(string fn);    
-    
+     
 };
 
 
