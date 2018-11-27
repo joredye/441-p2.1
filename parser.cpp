@@ -10,42 +10,34 @@ using namespace std;
 //---------------------------------
 parser::parser(){};
 
+
+
 //---------------------------------
-//          chooseProd
+//          chooseProd()
 //---------------------------------
-    /*
-    chooseProd(topToken, inputToken): returns: index into the grammar array of the
-production chosen, or return an error code (see 2 of the error messages above).
-Search down the list to find the first production where the LHS equals the topToken.
-Search the Select Set Members of a production to see if any matches the given
-inputToken; or if the first member of the Select Set is E (meaning this is the default
-token).
-    */
+
 int parser::chooseProd(token topToken, token inputToken){
     
-    //loop through grammar table, comparing tok from stack to LHS 
-    bool matched = false;
-    int the_match;
+    // for early escape check
+    bool got_hit = false;
+    int hit;
      
-    for(int i = 0; i < GR_NUM_PRODS; i++){
+    for(int i = 0; i < GR_NUM_PRODS; i++){  
         
         if(topToken.tokId == GR_PROD[i][GR_LHS_NDX]){
-            
-            if(!matched){
-                //record the first matching GR_PROD[][] token for early escape check
-                the_match = GR_PROD[i][GR_LHS_NDX];           
+
+            if(!got_hit){
+                hit = GR_PROD[i][GR_LHS_NDX];     
             }
-            matched = true;
+            got_hit = true;
             
-            //if first select set index is E, default prod
-            if(GR_PROD[i][GR_SELECT_FNDX] == E)
+            if(GR_PROD[i][GR_SELECT_FNDX] == E) //if first select set index is E, default
                 return i;
             
             //otherwise, loop through select set, look for a match to inputTok
             for(int j = GR_SELECT_FNDX; j <= GR_SELECT_LNDX; j++){
                 
-                //if you find it, great: return the production number
-                if(GR_PROD[i][j] == inputToken.tokId)
+                if(GR_PROD[i][j] == inputToken.tokId) //if found, return prod num
                     return i;
             }
         }
@@ -53,31 +45,26 @@ int parser::chooseProd(token topToken, token inputToken){
         //matches, but can't match the inputTok to any of the select sets, once 
         //we move onto the the next prod with a different LHS, we already know we 
         //have a "Parser: no production selected for Top Token" error
-        if(matched && (GR_PROD[i][GR_LHS_NDX] != the_match))
+        if(got_hit && (GR_PROD[i][GR_LHS_NDX] != hit))
             return P_ERR_TOPTOK;
         
     }      
-    
+
     //no prod found
     return P_ERR_NOPROD;
-
 }
                   
 
-
-
-    /*
-pushRHS(prodNdx)
-push the tokens on the RHS of the production indexed by the given index: remember,
-push them in reverse order:
-N -> aZb : push(b), push(Z), push(a)
-    */ 
-
+//------------------------------
+//          pushRHS()
+//------------------------------
 void parser::pushRHS(int prodnum){
     token *tokptr = NULL;
     
     for(int i = GR_RHS_LNDX; i >= GR_RHS_FNDX; i--){
-        if(GR_PROD[prodnum][i] != E){
+        
+        //ignore superfluous E's
+        if(GR_PROD[prodnum][i] != E){  
             tokptr = new token;
             tokptr->tokId = GR_PROD[prodnum][i];      
             tokstk.push(*tokptr);
@@ -87,82 +74,85 @@ void parser::pushRHS(int prodnum){
 }
 
 
-//---------------------------------
+//----------------------------
 //          parser
-//---------------------------------
+//----------------------------
 void parser::parse(string fn){
     
     scn.openSource(fn);
-    int k = 0;
-    int num_loops = 3;
-    bool firstpass = true; 
 
-    token start;
-    //start.tokId = NT_PROGRAM;
-    //tokstk.push(start);
-    
-    token stktok;
-    token intok ;   //= scn.getNextToken(strtbl);
-    
+    //initialization and "0th pass" display
+
+    stktok.tokId = NT_PROGRAM;
+    tokstk.push(stktok);
+    intok = scn.getNextToken(strtbl);
+    print(intok);
+
     //PDA Main Loop
-    for(k; k = num_loops; k++){
-        //cout << "top " << k << ": " << endl;
-        
-        if(firstpass){
-            start.tokId = NT_PROGRAM;
-            tokstk.push(start);
-            intok = scn.getNextToken(strtbl);
-        }
-        print(intok);
+    while(!pERR && !pEOF && !pEMP){
         
         stktok = tokstk.pop();
-        
-        //if token is nonterminal...
-        if(stktok.tokId >= FIRST_NT && stktok.tokId <= LAST_NT){
-         
-            //...try to find a prod
-            int prod = chooseProd(stktok, intok);
             
-            //################ Need better prod detection?
-            //  edge cases? TOK_SCANERR? 
-            if(prod >= P_FERR && prod <= P_LERR){
+        if(stktok.tokId >= FIRST_NT && stktok.tokId <= LAST_NT){    //if NT...
+
+            int prod = chooseProd(stktok, intok);   //...try to find prod
+            
+            if(prod >= P_FERR && prod <= P_LERR) //if not found, error
                 p_error(prod);
-            }
-            else{
+            else
                 pushRHS(prod);
-            }
-        }
+        } 
         
         //if token is terminal...
         else{
-            
-            //if first time through, don't need to scan next token
-            /*
-            if(!firstpass){
-                intok = scn.getNextToken(strtbl);
-            }
-            */
-            firstpass = false;
-            
-            
-            if(stktok.tokId != intok.tokId){
+            if(stktok.tokId != intok.tokId) //top of stack should match input token
                 p_error(P_ERR_MISMATCH);
-            }
-
-        }
-        
-        cout << "bottom " << k << ": " << endl;
-        print(intok);
+            else
+                intok = getNextTok();
+        }       
+       
+        //if stack is emptied, no need to print 
+        if(tokstk.empty())
+            pEMP = true;  
+        else
+            print(intok);
     }
-     
+    
+    checkFinish();     
 }
 
 
 
+//----------------------------
+//      checkFinish()
+//----------------------------
+// only error that isn't caught earlier
+void parser::checkFinish(){
+    if(pEMP && !pEOF)
+        p_error(P_ERR_STRAGGLERS);
+    else{
+        cout << "Parser: success!" << endl;
+    }
+}      
+
+
+//---------------------------------
+//     "getNextToken()" wrapper
+//---------------------------------
+token parser::getNextTok(){
+    token tok;
+    tok = scn.getNextToken(strtbl);
+    if(tok.tokId == TOK_SCANERR)
+        p_error(TOK_SCANERR);
+    if(tok.tokId == TOK_ENDSRC)
+        p_error(TOK_ENDSRC);
+    return tok;
+}
+
 
 
 //---------------------------
-//          print()
+//      print() wrapper
 //---------------------------
 void parser::print(token inTok){
     cout << "PARSE: " << "inTok=" << inTok.tokId << " " << getTokenString(inTok) << endl;
@@ -171,21 +161,50 @@ void parser::print(token inTok){
 }
 
 
+
 //---------------------------------
-//          grammar error
+//      exit condition checker
 //---------------------------------
-void parser::p_error(int prodnum){
-    if(prodnum == P_ERR_TOPTOK){
-        cout << "Parse Error: no production selected for Top Token" << endl;
-    }
-    else if(prodnum == P_ERR_NOPROD){
-        cout << "Parse Error: no productions for non-terminal" << endl;   
-    }
-    else if(prodnum == P_ERR_MISMATCH){
-        cout << "Parse Error: input token found, but Top Token expected" << endl;
-    }
+// sets flags, and prints err messages and the offending tokens
+void parser::p_error(int errnum){
     
-    pERR = true;
+    if(errnum == P_ERR_TOPTOK){
+        cout << "Parse Error: no production selected for Top Token" << endl;
+        pERR = true;
+        cout << "Top Token= " << getTokenString(stktok) << endl;
+        cout << "Input Token= " << getTokenString(intok) << endl;
+    }
+    else if(errnum == P_ERR_NOPROD){
+        cout << "Parse Error: no productions for non-terminal" << endl;   
+        pERR = true;
+        cout << "Top Token= " << getTokenString(stktok) << endl;
+        cout << "Input Token= " << getTokenString(intok) << endl;
+    }
+    else if(errnum == P_ERR_MISMATCH){
+        cout << "Parse Error: input token found, but Top Token expected" << endl;
+        pERR = true;
+        cout << "Top Token= " << getTokenString(stktok) << endl;
+        cout << "Input Token= " << getTokenString(intok) << endl;
+    }
+    else if(errnum == TOK_SCANERR){ 
+        cout << "Parse Error: scan error reported" << endl;
+        pERR = true;
+        cout << "Top Token= " << getTokenString(stktok) << endl;
+        cout << "Input Token= " << getTokenString(intok) << endl;
+    }
+    else if(errnum == TOK_ENDSRC){
+        pEOF = true;
+        //need to know if the stack is empty or not before it's an actual error
+        if(!tokstk.empty()){
+            cout << "Parse Error: unexpected end of source" << endl;
+            pERR = true;
+            cout << "Top Token= " << getTokenString(stktok) << endl;
+            cout << "Input Token= " << getTokenString(intok) << endl; 
+        }
+    }
+    else if(errnum == P_ERR_STRAGGLERS){
+        cout << "Parse Error: unexpected tokens in source past end of program" << endl;
+    }
 }
 
  

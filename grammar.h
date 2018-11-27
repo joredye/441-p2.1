@@ -16,34 +16,6 @@ const int GR_SELECT_FNDX = 9;	// first index of the Select1 Set
 const int GR_SELECT_LNDX = 11;  // last  index of the Select1 Set
 
 
-
-
-
-
-//---------------My Parser Error Constants-------------------
-
-//returned by chooseProd if any matching productions are found for the NT from the stack's top,
-//but the input token from scanner does not match any of the tokens in any of the matching
-//production's select sets, and there is no default production
-const int P_ERR_TOPTOK = 11630;
-
-
-// input token from source file and token expected by parser do not match
-const int P_ERR_MISMATCH = 11631;
-
-
-//returned by chooseProd if no productions are found for the NT from the top of the stack (i.e.
-//said NT matches no LHS in the grammar)
-const int P_ERR_NOPROD = 12073;
-
-
-//in case I need more grammar error constants down the line...
-const int P_FERR = P_ERR_TOPTOK;
-const int P_LERR = P_ERR_NOPROD;
-
-
-
-
 // The Pascal Grammar Productions and Select Sets
 const int GR_PROD[GR_NUM_PRODS][GR_NUM_COLS] = {
 	{ NT_PROGRAM,TOK_PROGRAM, TOK_IDENT, TOK_SEMIC, NT_DECLARATIONS, NT_SUBPGM_DCLS, NT_CMPD_STMT, TOK_PERIOD, E, TOK_PROGRAM, E, E },

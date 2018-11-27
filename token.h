@@ -132,6 +132,33 @@ const int NT_SIGN = 236;
 const int FIRST_NT = E;
 const int LAST_NT = NT_SIGN;
 
+
+
+//---------------My Parser Error Constants-------------------
+
+//matching production(s) found for the NT from the stack's top,
+//but input token from scanner does not match any tokens in matching
+//production(s) select set(s), and there is no default production
+const int P_ERR_TOPTOK = 11630;
+
+
+// input token from source file and token expected by parser do not match
+const int P_ERR_MISMATCH = 11631;
+
+// PDA stack is empty, but the source file has not been exhausted of tokens
+const int P_ERR_STRAGGLERS = 11632;
+
+// no productions are found for the NT from the top of the stack
+const int P_ERR_NOPROD = 12073;
+
+
+//in case I need more grammar error constants down the line...
+const int P_FERR = P_ERR_TOPTOK;
+const int P_LERR = P_ERR_NOPROD;
+
+
+
+
 // Reserved Words & Tokens
 const int NUM_RES_WORDS = 71;
 const std::string RES_WORDS[NUM_RES_WORDS] = {

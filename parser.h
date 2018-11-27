@@ -16,20 +16,22 @@ class parser{
     StringTable strtbl;
     tokStack tokstk;
     
-    bool pEOF;
-    bool pERR;
-    bool pEMP;
+    //my objects
+    token stktok;
+    token intok; 
+    bool pEOF = false;
+    bool pERR = false;
+    bool pEMP = false;
 
-    //my functions
+    //simple helpers and wrappers
     void print(token inTok);
-    void p_error(int prodnum);
-
+    void p_error(int errnum);
+    token getNextTok();
         
+    //suggested functions
     int chooseProd(token topToken, token inputToken);
     void pushRHS(int prodnum);
-    int checkFinish(/*?*/);
-     
+    void checkFinish(); //easily modified to return signal of success/failure
 };
 
 
-//THERE COULD BE OTHERS
