@@ -15,9 +15,16 @@ class parser{
     scanner scn;
     StringTable strtbl;
     tokStack tokstk;
-        
-    //parser(scanner _scn, StringTable _strtbl, tokStack _tokstk) : scn(_scn), strtbl(_strtbl), tokstk(_tokstk){};
     
+    bool pEOF;
+    bool pERR;
+    bool pEMP;
+
+    //my functions
+    void print(token inTok);
+    void p_error(int prodnum);
+
+        
     int chooseProd(token topToken, token inputToken);
     void pushRHS(int prodnum);
     int checkFinish(/*?*/);
